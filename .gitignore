@@ -1,0 +1,6 @@
+*.env*
+!.env.example
+*.sql
+
+# ignore docker compose cause it not neccesayr here
+docker-compose.y?ml

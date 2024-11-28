@@ -1,0 +1,54 @@
+# x-app_backend-common: &app_backend-common container_name:"${}"
+
+volumes:
+    sqldata:
+        driver: local
+    pgdata:
+        driver: local
+
+services:
+    # MYSQL
+    db:
+        container_name: "${DB_SERVICE_NAME}"
+        build:
+            context: "./_services/postgres"
+            dockerfile: "./no-ampq.Dockerfile"
+        environment:
+            - POSTGRES_USER=admin
+            - POSTGRES_DATABASE=concrete
+            - POSTGRES_
+        # volumes:
+        # - "pgdata:"
+        expose:
+            - 5432
+        # ports:
+        #     - "${DB_PORT_OUTER}:${DB_PORT_INNER}"
+
+    # app_backend:
+    #     # <<: *app_backend-common
+    #     container_name: "${APP_SERVICE_NAME}"
+    #     build:
+    #         context: "./_services/"
+    #         dockerfile: "./${APP_SERVICE_NAME}/Dockerfile.dev"
+    #     expose:
+    #         - 443
+    #         - "${APP_PORT_INNER}"
+    #     ports:
+    #         - "${APP_PORT_OUTER}:${APP_PORT_INNER}"
+    #     depends_on:
+    #         db:
+    #             condition: service_healthy
+
+    # app_frontend:
+    #     build:
+    #         context: "./_services/"
+    #         dockerfile: "./${FRONTEND_SERVICE_NAME}/Dockerfile.dev"
+    #         args:
+    #             - "USERNAME=${SERVICES_USERNAME}"
+    #             - "USERGROUP=${SERVICES_USERGROUP}"
+    #     container_name: "${FRONTEND_SERVICE_NAME}"
+    #     depends_on:
+    #         app_backend:
+    #             condition: service_healthy
+    #     ports:
+    #         - "80:${FRONTEND_PORT}"

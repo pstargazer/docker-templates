@@ -1,0 +1,3 @@
+pgsql_dumps/
+mysql_dumps/
+**dump**.sql
