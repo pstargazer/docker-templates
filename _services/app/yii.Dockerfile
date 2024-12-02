@@ -15,22 +15,20 @@ ENV USERGROUP users
 # set proccess user
 RUN adduser -u  -G ${USERGROUP} -s /bin/sh -D ${USERNAME}
 
-
-RUN apk update && apk upgrade
-
-# tools
-RUN apk add --no-cache lsof
-
-# prerequesite for php extentions
-RUN apk add --no-cache \
-    php83-pdo_pgsql \
-    oniguruma-dev \
-    php-common  \
-    libpq-dev \
-    libcurl curl-dev  \
-    libcrypto3 libssl3  \
-    libzip-dev \
+# prerequesites for building php extentions
+RUN <<EOF
+apk update
+apk upgrade
+apk add --no-cache
+    php83-pdo_pgsql
+    oniguruma-dev
+    php-common
+    libpq-dev
+    libcurl curl-dev
+    libcrypto3 libssl3
+    libzip-dev
     libxml2-dev
+EOF
 
 WORKDIR $PKG_CONFIG_PATH
 
@@ -106,12 +104,12 @@ RUN docker-php-ext-enable sysvshm
 RUN docker-php-ext-enable tokenizer
 
 
-RUN apk add \
-    openrc \
-    busybox \
-    nginx \
-    ca-certificates \
-    --no-cache
+RUN <<EOF
+apk add --no-cache
+    busybox
+    nginx
+    ca-certificates
+EOF
 
 # copy nginx conf
 COPY ./${SERVICES_FOLDER}/_nginx_common/ /etc/nginx/

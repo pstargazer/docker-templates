@@ -1,43 +1,47 @@
 # x-app_backend-common: &app_backend-common container_name:"${}"
 
 volumes:
-    sqldata:
-        driver: local
+    # sqldata:
+    #     driver: local
     pgdata:
         driver: local
 
 services:
     # MYSQL
     db:
-        container_name: "${DB_SERVICE_NAME}"
+        container_name: "test_db"
         build:
             context: "./_services/postgres"
-            dockerfile: "./no-ampq.Dockerfile"
+            dockerfile: "./no-amqp.Dockerfile"
+            args:
+                - POSTGRES_USER=postgres
+            target: development
+        volumes:
+            - "pgdata:/var/lib/postgresql/"
         environment:
-            - POSTGRES_USER=admin
-            - POSTGRES_DATABASE=concrete
-            - POSTGRES_
-        # volumes:
-        # - "pgdata:"
+            - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+            - POSTGRES_DATABASE=dflat
         expose:
             - 5432
         # ports:
         #     - "${DB_PORT_OUTER}:${DB_PORT_INNER}"
 
-    # app_backend:
-    #     # <<: *app_backend-common
-    #     container_name: "${APP_SERVICE_NAME}"
-    #     build:
-    #         context: "./_services/"
-    #         dockerfile: "./${APP_SERVICE_NAME}/Dockerfile.dev"
-    #     expose:
-    #         - 443
-    #         - "${APP_PORT_INNER}"
-    #     ports:
-    #         - "${APP_PORT_OUTER}:${APP_PORT_INNER}"
-    #     depends_on:
-    #         db:
-    #             condition: service_healthy
+    app_backend:
+        # <<: *app_backend-common
+        container_name: "test_backend"
+        build:
+            context: "."
+            dockerfile: "./_services/app/laravel_api.Dockerfile"
+            target: development
+            args:
+                - _DOMAIN=dflat
+        expose:
+            - 443
+        ports:
+            - "8080:80"
+        depends_on:
+            db:
+                condition: service_healthy
 
     # app_frontend:
     #     build:

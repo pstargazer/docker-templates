@@ -3,4 +3,9 @@
 *.sql
 
 # ignore docker compose cause it not neccesayr here
-docker-compose.y?ml
+docker-compose.yaml
+docker-compose.yml
+
+# ignore app dirs for debugging
+app_backend
+app_frontend
