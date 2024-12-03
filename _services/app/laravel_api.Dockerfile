@@ -1,6 +1,6 @@
-FROM node:21-alpine AS node
+# FROM node:21-alpine AS node
+FROM composer:latest AS composer
 FROM php:fpm-alpine AS base
-# FROM composer:latest
 
 # name of domain to use in certs generating, nginx config
 ARG _DOMAIN=example
@@ -22,14 +22,14 @@ if !id "$1" >/dev/null 2>&1; then
 fi
 EOF
 
-
+# crond jobs
+COPY ./_services/app/cron.d/* /etc/periodic
 
 # prerequesites for building php extentions
 RUN <<EOF
 apk update
 apk upgrade
 apk add --no-cache      \
-    php83-pdo_pgsql     \
     oniguruma-dev       \
     php-common          \
     libpq-dev           \
@@ -42,11 +42,19 @@ EOF
 # ============== PHP INSTALL ==============
 WORKDIR $PKG_CONFIG_PATH
 RUN docker-php-source extract
+
 RUN <<EOF
     docker-php-ext-configure    zip
     docker-php-ext-install      zip
     docker-php-ext-enable       zip
 EOF
+
+RUN <<EOF
+    docker-php-ext-configure    curl
+    docker-php-ext-install      curl
+    docker-php-ext-enable       curl
+EOF
+
 # RUN <<EOF
 #     docker-php-ext-configure    phar
 #     docker-php-ext-install      phar
@@ -93,6 +101,10 @@ RUN <<EOF
     docker-php-ext-configure    pgsql
     docker-php-ext-install      pgsql
     docker-php-ext-enable       pgsql
+
+EOF
+
+RUN <<EOF
     docker-php-ext-configure    pdo_pgsql
     docker-php-ext-install      pdo_pgsql
     docker-php-ext-enable       pdo_pgsql
@@ -102,6 +114,9 @@ EOF
 #     docker-php-ext-configure    mysql
 #     docker-php-ext-install      mysql
 #     docker-php-ext-enable       mysql
+# EOF
+
+# RUN <<EOF
 #     docker-php-ext-configure    pdo_mysql
 #     docker-php-ext-install      pdo_mysql
 #     docker-php-ext-enable       pdo_mysql
@@ -109,9 +124,12 @@ EOF
 
 # ============== PHP INSTALL END ==============
 
+
+# get composer to avoid situation when exts cant be founded by composer
+COPY --from=composer /usr/bin/composer /usr/bin/composer
+# composer        \
 RUN <<EOF
 apk add --no-cache  \
-    composer        \
     busybox         \
     nginx           \
     envsubst        \
@@ -133,7 +151,12 @@ FROM base AS development
 # rewrite $_DOMAIN variable because nginx not supports env variables
 WORKDIR ${CONF_INPUT}
 COPY ./_services/app/nginx_conf_dev .
-RUN envsubst "$_DOMAIN" < ./nginx.conf > $CONF_OUTPUT/nginx.conf
+RUN <<EOF
+envsubst '$_DOMAIN' < ./nginx.conf | tee ./nginx.conf.new
+mv nginx.conf.new nginx.conf
+rm -rf $CONF_OUTPUT/*
+cp -rf ./* $CONF_OUTPUT
+EOF
 
 WORKDIR $CMD_PATH
 COPY ./app_backend/ $CMD_PATH
@@ -145,6 +168,8 @@ apk del     \
     envsubst
 EOF
 
+ADD --chown=${USERNAME}:users --chmod=775 ./_services/app/dev_entrypoint.sh ${CMD_PATH}/entrypoint-custom.sh
+ENTRYPOINT ${CMD_PATH}/entrypoint-custom.sh
 # ============== PRODUCTION ===============
 FROM base AS production
 
@@ -153,7 +178,12 @@ FROM base AS production
 # rewrite $_DOMAIN variable because nginx not supports env variables
 WORKDIR ${CONF_INPUT}
 COPY ./_services/app/nginx_conf_prod .
-RUN envsubst "$_DOMAIN" < ./nginx.conf > $CONF_OUTPUT/nginx.conf
+RUN <<EOF
+envsubst '$_DOMAIN' < ./nginx.conf | tee ./nginx.conf.new
+mv nginx.conf.new nginx.conf
+rm -rf $CONF_OUTPUT/*
+cp -rf ./* $CONF_OUTPUT
+EOF
 
 WORKDIR $CMD_PATH
 COPY ./app_backend/ $CMD_PATH
@@ -172,5 +202,6 @@ EOF
 # set process user
 # do not set if crond needed
 USER ${USERNAME}
-ADD --chown=${USERNAME}:users --chmod=775 ./_services/app/entrypoint.sh /usr/bin/
-ENTRYPOINT /bin/ash /usr/bin/entrypoint.sh
+# ADD --chown=${USERNAME}:users --chmod=775 ./_services/app/entrypoint.sh /usr/bin/
+
+ENTRYPOINT ${CMD_PATH}/entrypoint-custom.sh
