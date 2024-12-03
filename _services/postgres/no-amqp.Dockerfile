@@ -1,8 +1,9 @@
 
-FROM postgres:latest as base
+FROM postgres:latest AS base
 LABEL maintainer=""
 
 ARG POSTGRES_USER=postgres
+ENV POSTGRES_USER=${POSTGRES_USER}
 # ARG POSTGRES_DATABASE
 # ARG POSTGRES_PASSWORD
 
@@ -14,11 +15,12 @@ COPY ./initdb.d /docker-entrypoint-initdb.d/
 # REMEMBER TO REDEFINE NAME IN docker-compose
 VOLUME [ "/var/lib/postgresql/" ]
 EXPOSE 5432
+
 HEALTHCHECK --interval=30s --timeout=30s --start-period=5s --retries=3 \
-    CMD ["CMD-SHELL", "pg_isready -U $POSTGRES_USER} || exit 1"]
+    CMD ["pg_isready", "-U", "postgres"]
 # ========================================
 # =========DEVELOPMENT VARIANT============
-FROM base as development
+FROM base AS development
 ENV MODE=development
 
 # install util commands, and delete excess
@@ -40,12 +42,10 @@ COPY ./conf_dev/ "${CONF_DIR}"
 
 # ========================================
 # =========PRODUCTION VARIANT=============
-FROM base as production
+FROM base AS production
 ENV MODE=prodiction
 
 COPY ./conf_prod/ "${CONF_DIR}"
 USER ${POSTGRES_USER}
-# ENTRYPOINT [ "/usr/bin/entrypoint.sh" ]
-# ENTRYPOINT [ "postgres" ]
-# append custom args
+
 CMD postgres --config-file=${CONF_DIR}
