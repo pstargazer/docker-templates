@@ -9,3 +9,8 @@ docker-compose.yml
 # ignore app dirs for debugging
 app_backend
 app_frontend
+
+
+.obsidian/
+.vscode/
+.idea/
