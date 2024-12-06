@@ -27,7 +27,6 @@ services:
         #     - "${DB_PORT_OUTER}:${DB_PORT_INNER}"
 
     app_backend:
-        # <<: *app_backend-common
         container_name: "test_backend"
         build:
             context: "."
@@ -43,16 +42,12 @@ services:
             db:
                 condition: service_healthy
 
-    # app_frontend:
-    #     build:
-    #         context: "./_services/"
-    #         dockerfile: "./${FRONTEND_SERVICE_NAME}/Dockerfile.dev"
-    #         args:
-    #             - "USERNAME=${SERVICES_USERNAME}"
-    #             - "USERGROUP=${SERVICES_USERGROUP}"
-    #     container_name: "${FRONTEND_SERVICE_NAME}"
-    #     depends_on:
-    #         app_backend:
-    #             condition: service_healthy
-    #     ports:
-    #         - "80:${FRONTEND_PORT}"
+    app_frontend:
+        build:
+            context: "."
+            dockerfile: "_services/frontend/vue.Dockerfile"
+        # depends_on:
+        #     app_backend:
+        #         condition: service_healthy
+        ports:
+            - "80:5173"

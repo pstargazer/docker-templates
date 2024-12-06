@@ -8,7 +8,7 @@ FROM node:22-alpine3.19 AS node
 # path for entrypoint
 ENV ENTRY_PREFIX /usr/bin/
 # path for app
-ENV CMD_PATH /app
+ENV CMD_PATH /app/
 
 FROM alpine:3.20
 
@@ -28,13 +28,15 @@ RUN apk add lsof
 
 # prioritize ipv4 over ipv6,cause laravel runs v4
 # not sure that neccessary
-RUN echo net.ipv4.ip_forward=1 | tee -a /etc/sysctl.conf && sysctl -p
+# RUN echo net.ipv4.ip_forward=1 | tee -a /etc/sysctl.conf && sysctl -p
 
 # WORKDIR "${CMD_PATH}"
 # copy project
-ADD --chown=${USERNAME}:${USERGROUP} --chmod=775 ./frontend/ ${CMD_PATH}
-# copy app entrypoint
-ADD --chown=users --chmod=775 _docker/frontend/entrypoint.sh ${ENTRY_PREFIX}/
+RUN mkdir /app
+WORKDIR /app
+ADD --chown=${USERNAME}:${USERGROUP} --chmod=775 ./app_frontend/ /app
+RUN npm install
 
 EXPOSE 80 5173 443
-ENTRYPOINT /bin/ash "${ENTRY_PREFIX}/entrypoint.sh"
+
+CMD npm run dev

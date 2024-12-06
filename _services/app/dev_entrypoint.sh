@@ -22,8 +22,8 @@ prepare() {
     fi
     echo "composer check PASS"
 
-    composer update
-    php artisan test --ansi --drop-databases --env=".env.testing"
+    composer update --quiet
+    php artisan test # --ansi --drop-databases --env=".env.testing"
 }
 
 start_web() {
