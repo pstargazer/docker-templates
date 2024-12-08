@@ -10,19 +10,17 @@ ENV ENTRY_PREFIX /usr/bin/
 # path for app
 ENV CMD_PATH /app/
 
-FROM alpine:3.20
+FROM alpine:3.20 AS base
 
 
 # Get NodeJS
 COPY --from=node /usr/local/bin /usr/local/bin
 # Get npm
 COPY --from=node /usr/local/lib/node_modules /usr/local/lib/node_modules
-
-# copy system alpine conf (DNS settings, etc)
-# COPY ./_docker/frontend/conf /etc/
 # library prerequisite for node
 RUN apk add libstdc++
 
+FROM base AS dev
 # util
 RUN apk add lsof
 
@@ -30,7 +28,6 @@ RUN apk add lsof
 # not sure that neccessary
 # RUN echo net.ipv4.ip_forward=1 | tee -a /etc/sysctl.conf && sysctl -p
 
-# WORKDIR "${CMD_PATH}"
 # copy project
 RUN mkdir /app
 WORKDIR /app
