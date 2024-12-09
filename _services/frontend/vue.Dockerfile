@@ -3,16 +3,7 @@ ARG USERGROUP=users
 
 FROM node:22-alpine3.19 AS node
 
-# ENV USERNAME docker
-# ENV USERGROUP process
-# path for entrypoint
-ENV ENTRY_PREFIX /usr/bin/
-# path for app
-ENV CMD_PATH /app/
-
 FROM alpine:3.20 AS base
-
-
 # Get NodeJS
 COPY --from=node /usr/local/bin /usr/local/bin
 # Get npm
@@ -24,6 +15,7 @@ FROM base AS dev
 # util
 RUN apk add lsof
 
+# TODO: delete if everything alright
 # prioritize ipv4 over ipv6,cause laravel runs v4
 # not sure that neccessary
 # RUN echo net.ipv4.ip_forward=1 | tee -a /etc/sysctl.conf && sysctl -p
