@@ -1,5 +1,5 @@
 # Template dockerfile repo
-this repo - just a little suitcase with dockerfiles to keep the best practicies of mine projects in one place  
+this repo - just a little suitcase with dockerfiles to keep the best practicies of mine projects in one place
 
 ## TODO:
 - [x] postgres container
@@ -9,12 +9,12 @@ this repo - just a little suitcase with dockerfiles to keep the best practicies 
 	- [ ] basic init
 	- [ ] cloning into testing DB
 	- [ ] autodump if env var is set (optional)
-- [ ] laravel container
+- [x] laravel container
 	- [ ] first startup checks
-		- [ ] composer check
-		- [ ] composer install/update
+		- [x] composer check
+		- [x] composer install/update
 		- [ ] run migrations if db is empty (optional)
-	- [ ] startup checks (`composer test` || `php artisan test`)
+	- [x] startup checks (`composer test` || `php artisan test`)
 	- [ ] test and debug production mode
 - [ ] Yii container
 	- [ ] ???
