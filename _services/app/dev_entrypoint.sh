@@ -1,4 +1,5 @@
 #!/bin/ash
+set -eu
 
 prepare() {
     # TODO: try jq at parsing jsons
