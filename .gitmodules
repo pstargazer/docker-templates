@@ -1,7 +1,7 @@
 [submodule "app_backend"]
 	path = app_backend/
-	url = git://github.com/author/backend_repo.git
+	url = git@gitlab.com:garageinc/dflat-frontend.git
 
 [submodule "app_frontend"]
 	path = app_frontend/
-	url = git://github.com/author/frontend_repo.git
+	url = git@gitlab.com:garageinc/dflat-frontend.git
