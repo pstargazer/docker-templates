@@ -15,7 +15,7 @@
     ; url =
 
 [remote "templates"]
-    url = https://gitlab.com/garageinc/docker-suitcase.git
+    url = git@gitlab.com:garageinc/docker-suitcase.git
     ; url = git@github.com:pstargazer/docker-templates.git
 
 
@@ -26,4 +26,4 @@
     comma = commit -a
     conf-include = config --local include.path "$PWD/.gitconfig"
     ; use only in place to apply template and only after commit
-    template-get = !git fetch template/master && git merge templates/debug --autostash
+    template-get = !git fetch templates debug && git merge FETCH_HEAD --autostash
