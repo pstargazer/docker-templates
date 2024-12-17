@@ -1,5 +1,0 @@
-[merge]
-    tool = vimdiff
-[mergetool "vimdiff"]
-    trustExitCode = true
-    keepBackup = false
