@@ -1,0 +1,9 @@
+[merge]
+    tool = vimdiff
+[mergetool "vimdiff"]
+    trustExitCode = true
+    keepBackup = false
+
+[remote "templates"]
+    ; url = git@github.com:pstargazer/docker-templates.git
+    url = https://gitlab.com/garageinc/docker-suitcase.git
