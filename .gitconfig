@@ -4,6 +4,21 @@
     trustExitCode = true
     keepBackup = false
 
+[status]
+    short = true
+
+
+[remote]
+    pushDefault = origin
+
+; [remote "origin"]
+    ; url =
+
 [remote "templates"]
-    ; url = git@github.com:pstargazer/docker-templates.git
     url = https://gitlab.com/garageinc/docker-suitcase.git
+    ; url = git@github.com:pstargazer/docker-templates.git
+
+
+
+[alias "stat"]
+    cmd = git status
