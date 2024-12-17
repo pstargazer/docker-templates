@@ -20,5 +20,10 @@
 
 
 
-[alias "stat"]
-    cmd = git status
+[alias]
+    stat = status
+    adda = add -A
+    comma = commit -a
+    conf-include = config --local include.path "$PWD/.gitconfig"
+    ; use only in place to apply template and only after commit
+    template-get = !git fetch template/master && git merge templates/debug --autostash

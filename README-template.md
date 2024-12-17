@@ -18,3 +18,18 @@ this repo - just a little suitcase with dockerfiles to keep the best practicies 
 	- [ ] test and debug production mode
 - [ ] Yii container
 	- [ ] ???
+
+
+### Basic init
+Basic init consists of few several parts:
+0. make sure YOU:
+    - activated frontend module (if you have one)
+    - had set submodules and remotes urls at .gitmodules and .gitconfig
+1. make the git read your custom `.gitconfig`
+2. sync submodules
+3. get submodules code
+```
+git config --local include.path "$PWD/.gitconfig"
+git submodules sync
+git pull
+```
