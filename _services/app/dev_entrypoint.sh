@@ -5,7 +5,8 @@ prepare() {
     # TODO: try jq at parsing jsons
     platform_check() {
         EXITCODE=$(composer check --quiet | echo $?)
-        return $EXITCODE
+        # return $EXITCODE
+        echo $EXITCODE
     }
 
     grant_access() {
@@ -16,7 +17,7 @@ prepare() {
     }
 
     grant_access
-    checkExitCode = $(platform_check)
+    checkExitCode=$(platform_check)
     if [ $checkExitCode != 0 ]; then
         printf "composer check exited with code: %s" "${checkExitCode}"
         exit 1;

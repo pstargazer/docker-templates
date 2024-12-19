@@ -1,7 +1,11 @@
 [submodule "app_backend"]
 	path = app_backend/
-	url = git@gitlab.com:garageinc/dflat-frontend.git
+	url = git@gitlab.com:garageinc/dflat-backend.git
+	branch = debug
+	fetchRecurseSubmodules = true
 
 [submodule "app_frontend"]
 	path = app_frontend/
 	url = git@gitlab.com:garageinc/dflat-frontend.git
+	branch = debug
+    fetchRecurseSubmodules = true
