@@ -24,6 +24,7 @@ RUN apk add lsof
 RUN mkdir /app
 WORKDIR /app
 ADD --chown=${USERNAME}:${USERGROUP} --chmod=775 ./app_frontend/ .
+VOLUME ["/app/node_modules"]
 RUN npm install
 
 EXPOSE 80 5173 443

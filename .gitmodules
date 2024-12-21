@@ -1,12 +1,12 @@
 [submodule "app_backend"]
-	path = app_backend/
+	path = ./app_backend
 	url = git://github.com/author/backend_repo.git
 	branch = debug
 	fetchRecurseSubmodules = true
 
 [submodule "app_frontend"]
     active = false ; set only if frontend is present
-	path = app_frontend/
+	path = ./app_frontend
 	url = git://github.com/author/frontend_repo.git
 	branch = debug
     fetchRecurseSubmodules = true

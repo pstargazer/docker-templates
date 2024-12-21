@@ -1,0 +1,13 @@
+docker-compose.yml merge=ours
+# *.Dockerfile merge=theirs
+_services/ merge=theirs
+
+
+# git files
+.gitattributes merge=ours
+.gitignore merge=ours
+.gitmodules merge=ours
+
+
+README.md merge=ours
+README-template.md merge=ours
