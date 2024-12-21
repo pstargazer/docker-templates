@@ -11,11 +11,11 @@
 [remote]
     pushDefault = origin
 
-; [remote "origin"]
-    ; url =
+[remote "origin"]
+    url = git@gitlab.com:dflatrental/dflat.git
 
 [remote "templates"]
-    url = git@gitlab.com:dflatrental/docker-suitcase.git
+    url = git@gitlab.com:evgenyshalygin/docker-suitcase.git
     ; url = git@github.com:pstargazer/docker-templates.git
 
 
