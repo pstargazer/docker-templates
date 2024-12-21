@@ -15,7 +15,7 @@
     ; url =
 
 [remote "templates"]
-    url = git@gitlab.com:garageinc/docker-suitcase.git
+    url = git@gitlab.com:dflatrental/docker-suitcase.git
     ; url = git@github.com:pstargazer/docker-templates.git
 
 
