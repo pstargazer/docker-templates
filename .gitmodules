@@ -7,5 +7,6 @@
 [submodule "app_frontend"]
 	path = app_frontend/
 	url = git@gitlab.com:garageinc/dflat-frontend.git
+    	; active = false ; set only if frontend is present
 	branch = debug
-    fetchRecurseSubmodules = true
+    	fetchRecurseSubmodules = true
