@@ -8,8 +8,8 @@
     short = true
 
 
-[remote]
-    pushDefault = origin
+; [remote]
+;     pushDefault = origin
 
 ; [remote "origin"]
     ; url =
