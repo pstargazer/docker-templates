@@ -8,8 +8,8 @@
     short = true
 
 
-; [remote]
-;     pushDefault = origin
+[remote]
+    pushDefault = origin
 
 ; [remote "origin"]
     ; url =
@@ -27,9 +27,3 @@
     conf-include = config --local include.path "$PWD/.gitconfig"
     ; use only in place to apply template and only after commit
     template-get = !git fetch templates debug && git merge FETCH_HEAD --autostash
-
-
-# driver for dockerfiles
-[merge "docker-driver"]
-    name = Custom Driver for *.ext files
-    driver = custom-merge-command %O %A %B %L %P

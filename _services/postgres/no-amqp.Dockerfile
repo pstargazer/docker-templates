@@ -2,17 +2,16 @@
 FROM postgres:latest AS base
 LABEL maintainer=""
 
-# Make sure to set in .env file beside this file
-# and include in docker compose
-# POSTGRES_USER=postgres
-# POSTGRES_DATABASE
-# POSTGRES_PASSWORD
+ARG POSTGRES_USER=postgres
+ENV POSTGRES_USER=${POSTGRES_USER}
+# ARG POSTGRES_DATABASE
+# ARG POSTGRES_PASSWORD
 
 ENV CONF_DIR=/etc/pgconf/
 
 # COPY ./entrypoint.sh /tmp/
 COPY ./initdb.d /docker-entrypoint-initdb.d/
-
+# parent dir of datadir
 # REMEMBER TO REDEFINE NAME IN docker-compose
 VOLUME [ "/var/lib/postgresql/" ]
 EXPOSE 5432

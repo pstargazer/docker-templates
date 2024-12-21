@@ -160,7 +160,6 @@ EOF
 
 WORKDIR $CMD_PATH
 COPY ./app_backend/ $CMD_PATH
-VOLUME ["/var/www/html/vendor", "/var/www/html/storage"]
 
 EXPOSE 8000 443
 # clean up excess
@@ -187,7 +186,6 @@ cp -rf ./* $CONF_OUTPUT
 EOF
 
 WORKDIR $CMD_PATH
-VOLUME ["/var/www/html/vendor", "/var/www/html/storage"]
 COPY ./app_backend/ $CMD_PATH
 
 # turn of expose_php due for security

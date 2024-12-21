@@ -23,8 +23,7 @@ RUN apk add lsof
 # copy project
 RUN mkdir /app
 WORKDIR /app
-ADD --chown=${USERNAME}:${USERGROUP} --chmod=775 ./app_frontend/ .
-VOLUME ["/app/node_modules"]
+ADD --chown=docker:users --chmod=775 ./app_frontend/ .
 RUN npm install
 
 EXPOSE 80 5173 443
