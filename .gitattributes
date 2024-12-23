@@ -2,6 +2,9 @@
 docker-compose.yml merge=paitence
 # *.Dockerfile merge=theirs
 _services/ merge=theirs
+# do not touch config files until needed
+# consider about paitence set
+_services/**/*conf* merge=ours
 
 
 # git files
