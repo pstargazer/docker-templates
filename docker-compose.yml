@@ -18,10 +18,10 @@ services:
             context: "./_services/postgres"
             dockerfile: "./no-amqp.Dockerfile"
             args:
-                - POSTGRES_USER=postgres
+                - POSTGRES_USER=${POSTGRES_USER}
             target: development
         volumes:
-            - "pgdata:/var/lib/postgresql/"
+            - "pgdata:/var/lib/postgresql"
         env_file: .env
         expose:
             - 5432

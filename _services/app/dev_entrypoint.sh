@@ -22,9 +22,12 @@ prepare() {
         printf "composer check exited with code: %s" "${checkExitCode}"
         exit 1;
     fi
-    echo "composer check PASS"
+    echo "composer check OK"
 
     composer update --quiet
+    composer install --quiet
+    echo "composer update && install OK"
+    # dont even try that, it leads to lot of deprecation logs
     php artisan test # --ansi --drop-databases --env=".env.testing"
 }
 

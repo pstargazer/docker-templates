@@ -1,6 +1,9 @@
 # FROM node:21-alpine AS node
 FROM composer:latest AS composer
-FROM php:fpm-alpine AS base
+# FROM php:fpm-alpine AS base
+# php:8.2-fpm
+FROM php:8.2-fpm-alpine AS base
+
 
 # name of domain to use in certs generating, nginx config
 ARG _DOMAIN=example
