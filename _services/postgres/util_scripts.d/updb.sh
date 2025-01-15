@@ -1,0 +1,7 @@
+#!/bin/sh
+
+psql \
+    -v ON_ERROR_STOP=1 \
+    -U "${POSTGRES_USER}" <<-EOSQL
+GRANT ALL PRIVILEGES ON * TO ${POSTGRES_USER};
+EOSQL

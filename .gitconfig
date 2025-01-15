@@ -1,3 +1,6 @@
+[core]
+    filemode = false
+
 [merge]
     tool = vimdiff
 [mergetool "vimdiff"]

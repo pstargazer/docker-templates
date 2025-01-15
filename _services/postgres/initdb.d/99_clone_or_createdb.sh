@@ -6,29 +6,28 @@
 #
 set -e
 
-if psql -lqt | cut -d \| -f 1 | grep -qw "${POSTGRES_DATABASE}"; then
+tablename() {
+    psql -lqt | cut -d '|' -f 1 | grep -o "${PROJECT_DATABASE}"
+}
+
+table=$(tablename)
+# exit
+if [ $table == $PROJECT_DATABASE ]; then
     # database exists,cloning
     psql \
         -v ON_ERROR_STOP=1 \
-        -U "${POSTGRES_USER}" <<-EOSQL
-    REVOKE CONNECT ON DATABASE "${POSTGRES_DATABASE}" FROM PUBLIC;
+        -U "$POSTGRES_USER" <<-EOSQL
+    REVOKE CONNECT ON DATABASE "${PROJECT_DATABASE}" FROM PUBLIC;
 
-    -- while connected to another DB - like the default maintenance DB "postgres"
-    SELECT pg_terminate_backend(pid)
-    FROM   pg_stat_activity
-    WHERE  datname = '${POSTGRES_DATABASE}'         -- name of prospective template db
-    AND    pid <>  pg_backend_pid();            -- don't kill your own session
+    CREATE DATABASE "${PROJECT_DATABASE}_test" WITH TEMPLATE "${PROJECT_DATABASE}";
 
-    CREATE DATABASE "${POSTGRES_DATABASE}_test" WITH TEMPLATE "${POSTGRES_DATABASE}";
+    GRANT CONNECT ON DATABASE "${PROJECT_DATABASE}" TO PUBLIC;  -- only if they had it before
+    GRANT CONNECT ON DATABASE "${PROJECT_DATABASE}_test" TO PUBLIC;  -- only if they had it before
 
-    GRANT CONNECT ON DATABASE "${POSTGRES_DATABASE}" TO PUBLIC;  -- only if they had it before
 EOSQL
 # NOTE: HEREDOC END SHOULD NOT BE PREPENDED WITH SPACES/TABS
 else
     echo "    DATABASE DUMP DOES NOT EXISTS OR EMPTY, RUN YOUR MIGRATIONS AND PUT DUMP INTO initdb.d"
-    psql \
-        -v ON_ERROR_STOP=1 \
-        -U $POSTGRES_USER <<-EOSQL
-    CREATE DATABASE $POSTGRES_DATABASE;
-EOSQL
+    createdb $PROJECT_DATABASE
+    createdb ${PROJECT_DATABASE}_test
 fi

@@ -1,5 +1,23 @@
-#!/bin/ash
 set -eu
+
+prepare_firstrun() {
+    # if env not exists
+    if [ ! -f .env ]; then
+        echo "creating new config"
+        touch .env
+        envsubst < .env.example | tee .env
+    fi
+
+    # check if APP_KEY IS SET
+    if [ -z $(awk -F '=' '/^APP_KEY/{print $2}' ".env") ]; then
+        php artisan key:generate
+        # php artisan migrate
+    else
+        echo ""
+        echo "Proceeding startup, APP_KEY is OK"
+        echo ""
+    fi
+}
 
 prepare() {
     # TODO: try jq at parsing jsons
@@ -62,5 +80,6 @@ start_api() {
 # exit
 cd $CMD_PATH
 
+prepare_firstrun
 prepare
 start_api

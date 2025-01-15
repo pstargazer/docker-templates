@@ -4,7 +4,6 @@ FROM composer:latest AS composer
 # php:8.2-fpm
 FROM php:8.2-fpm-alpine AS base
 
-
 # name of domain to use in certs generating, nginx config
 ARG _DOMAIN=example
 # CHECKME: name of process user
@@ -141,10 +140,14 @@ EOF
 
 # generating ssl cert
 WORKDIR /etc/ssl
+COPY ./_services/app/certs/* /root/.postgresql/
+COPY ./_services/app/certs .
+# make a server certificate file
 RUN <<EOF
-openssl req -new -newkey rsa:4096 -days 365 -nodes -x509                \
-    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.${_DOMAIN}.com"   \
+openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 \
+    -subj "/C=US/ST=Denial/L=Springfield/O=Dis/CN=www.${_DOMAIN}.site" \
     -keyout ${_DOMAIN}.key  -out ${_DOMAIN}.cert
+update-ca-certificates
 EOF
 
 
@@ -166,13 +169,13 @@ COPY ./app_backend/ $CMD_PATH
 
 EXPOSE 8000 443
 # clean up excess
-RUN <<EOF
-apk del     \
-    envsubst
-EOF
+# RUN <<EOF
+# apk del     \
+#     envsubst
+# EOF
 
-ADD --chown=${USERNAME}:users --chmod=775 ./_services/app/dev_entrypoint.sh ${CMD_PATH}/entrypoint-custom.sh
-ENTRYPOINT ${CMD_PATH}/entrypoint-custom.sh
+ADD --chown=${USERNAME}:users --chmod=775 ./_services/app/dev_entrypoint.sh /entrypoint-custom.sh
+ENTRYPOINT /entrypoint-custom.sh
 # ============== PRODUCTION ===============
 FROM base AS production
 
@@ -189,7 +192,7 @@ cp -rf ./* $CONF_OUTPUT
 EOF
 
 WORKDIR $CMD_PATH
-COPY ./app_backend/ $CMD_PATH
+# COPY ./app_backend/ $CMD_PATH
 
 # turn of expose_php due for security
 RUN awk '{ if ($0 ~ /expose_php = Off/) { $0 = "expose_php = On" } print }' /usr/local/etc/php.ini > /usr/local/etc/php.ini
